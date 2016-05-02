@@ -5,14 +5,14 @@ class OwnershipsController < ApplicationController
     if params[:asin]
       @item = Item.find_or_initialize_by(asin: params[:asin])
     else
-      @item = Item.find(params[:item_id])
+      @item = Item.find(params[:asin])
     end
 
     # itemsテーブルに存在しない場合はAmazonのデータを登録する。
     if @item.new_record?
       begin
         # TODO 商品情報の取得 Amazon::Ecs.item_lookupを用いてください
-        response = {}
+        response = Amazon::Ecs.item_lookup(@item[:asin], :response_group => 'Medium', :country => 'jp')
       rescue Amazon::RequestError => e
         return render :js => "alert('#{e.message}')"
       end
@@ -30,12 +30,25 @@ class OwnershipsController < ApplicationController
     # TODO ユーザにwant or haveを設定する
     # params[:type]の値にHaveボタンが押された時には「Have」,
     # Wantボタンが押された時には「Want」が設定されています。
+    if params[:type] == "Have"
+      current_user.have(@item)
+    else
+      current_user.want(@item)
+    end
     
 
   end
 
   def destroy
-    @item = Item.find(params[:item_id])
+    if params[:type] == "Have"
+      relationship = current_user.haves.find_by(params[:id])
+      @item = relationship.item
+      current_user.unhave(@item)
+    else
+      relationship = current_user.wants.find_by(params[:id])
+      @item = relationship.item
+      current_user.unwant(@item)
+    end
 
     # TODO 紐付けの解除。 
     # params[:type]の値にHave itボタンが押された時には「Have」,
