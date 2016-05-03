@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <% if content_for?(:head) %>
+  
+    
+  <% if logged_in? %>
     <%= yield :head %>
   <% else %>
     <title>Monolist</title>
