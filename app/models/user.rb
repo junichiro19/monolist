@@ -59,4 +59,6 @@ class User < ActiveRecord::Base
     want_items.include?(item)
   end
   
+  
+  
 end
