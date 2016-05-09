@@ -10,10 +10,10 @@
                 <th>タイトル</th>
             </tr>
             <% i = 1 %>
-            <% @item.each do |wants| %>
+            <% @want_ranking.keys.each do |wants| %>
                 <tr>
                     <td><%= i %></td>
-                    <td><%= wants.title %></td>
+                    <td><%= rank(wants).title %></td>
                 </tr>
                 <% i = i + 1 %>
             <% end %>
