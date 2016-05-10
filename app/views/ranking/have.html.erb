@@ -7,13 +7,21 @@
         <table class="table table-striped">
             <tr>
                 <th>順位</th>
-                <th>タイトル</th>
+                <th>商品</th>
+                <th>名前</th>
             </tr>
             <% i = 1 %>
             <% @have_ranking.keys.each do |haves| %>
                 <tr>
                     <td><%= i %></td>
-                    <td><%= rank(haves).title %></td>
+                    <td>
+                        <% if rank(haves).small_image.present? %>
+                            <%= image_tag(rank(haves).small_image , alt: rank(haves).title) %>
+                        <% else %>
+                            <%= image_tag("no-image_small.png" , alt: rank(haves).title) %>
+                        <% end %>
+                    </td>
+                    <td><%= link_to(rank(haves).title, rank(haves).detail_page_url) %></td>
                 </tr>
                 <% i = i + 1 %>
             <% end %>
